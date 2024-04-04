@@ -33,3 +33,12 @@ a Python virtual environment within which you can run the tool.
 % source venv/bin/activate
 % pip install -r requirements.txt
 ```
+
+## Unit Tests
+
+The unit test relies on `pytest`. This will be installed in the virtual environment with the
+other dependencies. Running the test is simply typing at the top level:
+
+```BASH
+pytest
+```

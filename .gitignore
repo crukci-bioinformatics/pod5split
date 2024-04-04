@@ -162,6 +162,7 @@ cython_debug/
 # Eclipse
 .project
 .pydevproject
+.settings
 
 # Test output directories
 testout
