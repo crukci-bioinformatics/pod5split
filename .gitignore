@@ -163,3 +163,6 @@ cython_debug/
 .project
 .pydevproject
 
+# Test output directories
+testout
+

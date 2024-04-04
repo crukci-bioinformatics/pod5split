@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# coding: utf-8
 
 import os
 import pod5
@@ -33,18 +34,15 @@ class Pod5Split():
         self.parser.add_argument('-o', '--out', metavar = '<dir>', dest = 'outDir', type = Path, help = "The directory to write the file's chunks to.")
         self.parser.add_argument('-r', '--reads', metavar = '<int>', default = 25000, dest = 'chunkSize', type = int, help = "The number of reads in each chunk. Default 25000.")
         self.parser.add_argument('inPod5', metavar = '<pod5 file>', type = Path, help = "The Pod5 file to split.")
-        # self.parser.add_argument('-t', '--threads', metavar = 'int', default = DEFAULT_THREADS, dest = 'threads', type = int)
 
     def parse(self, args = None):
         self.parser.parse_args(args, self)
         if not self.outDir:
-            self.outDir = Path(os.getcwd())
+            self.outDir = Path.cwd()
         if not self.fileBase:
             self.fileBase = self.inPod5.stem
         if self.chunkSize < 1:
             self.chunkSize = 1
-        #if self.threads < 1:
-        #    self.threads = 1
 
     @logged_all
     def split(self):
@@ -59,7 +57,7 @@ class Pod5Split():
             for pod5Record in reader:
                 allReadIds.append(pod5Record.read_id)
 
-        totalChunks = (totalReads + self.chunkSize - 1) / self.chunkSize
+        totalChunks = (totalReads + self.chunkSize - 1) // self.chunkSize
 
         pbar = tqdm(
             total = totalReads,
