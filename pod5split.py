@@ -63,10 +63,10 @@ class Pod5Split():
 
         pbar = tqdm(
             total = totalReads,
-            desc="Splitting",
-            unit=" reads",
-            leave=True,
-            position=0,
+            desc = "Splitting",
+            unit = " reads",
+            leave = True,
+            colour = 'green',
             **PBAR_DEFAULTS,
         )
 
@@ -90,7 +90,7 @@ class Pod5Split():
                     repacker.set_output_finished(repackerOut)
                     repacker.finish()
 
-            pbar.update()
+            pbar.update(end - start)
 
             chunkNumber += 1
 
