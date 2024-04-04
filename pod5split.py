@@ -64,7 +64,7 @@ class Pod5Split():
         pbar = tqdm(
             total = totalReads,
             desc="Splitting",
-            unit=" Read",
+            unit=" reads",
             leave=True,
             position=0,
             **PBAR_DEFAULTS,
@@ -77,7 +77,7 @@ class Pod5Split():
 
             chunkReadIds = allReadIds[start:end]
 
-            chunkName = f"{self.fileBase}_{chunkNumber:05d}.pod5"
+            chunkName = f"{self.fileBase}.{chunkNumber:05d}.pod5"
             chunkPath = self.outDir / chunkName
 
             chunkPath.unlink(True)
