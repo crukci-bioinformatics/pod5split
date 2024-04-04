@@ -51,65 +51,50 @@ class Pod5Split():
         if not self.outDir.exists():
             self.outDir.mkdir(exist_ok = True)
 
-        self.repacker = Repacker()
+        allReadIds = []
+        totalReads = 0
 
         with pod5.Reader(self.inPod5) as reader:
-            expectedChunks = (reader.num_reads + self.chunkSize - 1) // self.chunkSize
-
-            pbar = tqdm(
-                total = reader.num_reads,
-                desc="Splitting",
-                unit="Read",
-                leave=True,
-                position=0,
-                **PBAR_DEFAULTS,
-            )
-
-            chunkReadIds = []
-            chunkNumber = 0
-            readNumber = 0
-
+            totalReads = reader.num_reads
             for pod5Record in reader:
-                chunkReadIds.append(pod5Record.read_id)
+                allReadIds.append(pod5Record.read_id)
 
-                readNumber += 1
-                if readNumber % 100 == 0:
-                    pbar.update(readNumber)
+        totalChunks = (totalReads + self.chunkSize - 1) / self.chunkSize
 
-                if len(chunkReadIds) >= self.chunkSize:
+        pbar = tqdm(
+            total = totalReads,
+            desc="Splitting",
+            unit=" Read",
+            leave=True,
+            position=0,
+            **PBAR_DEFAULTS,
+        )
 
-                    self._writeChunk(reader, chunkNumber, chunkReadIds)
+        chunkNumber = 0
+        while chunkNumber < totalChunks:
+            start = chunkNumber * self.chunkSize
+            end = min((chunkNumber + 1) * self.chunkSize, totalReads)
 
-                    chunkReadIds.clear()
-                    chunkNumber += 1
+            chunkReadIds = allReadIds[start:end]
 
-                    #pbar.update(chunkNumber)
+            chunkName = f"{self.fileBase}_{chunkNumber:05d}.pod5"
+            chunkPath = self.outDir / chunkName
 
-            if len(chunkReadIds) > 0:
-                self._writeChunk(reader, chunkNumber, readIds)
-                pbar.update(reader.num_reads)
+            chunkPath.unlink(True)
+
+            with pod5.Reader(self.inPod5) as reader:
+                with pod5.Writer(chunkPath) as writer:
+                    repacker = Repacker()
+                    repackerOut = repacker.add_output(writer)
+                    repacker.add_selected_reads_to_output(repackerOut, reader, chunkReadIds)
+                    repacker.set_output_finished(repackerOut)
+                    repacker.finish()
+
+            pbar.update(end)
+
+            chunkNumber += 1
 
         pbar.close()
-
-        #while not self.repacker.is_complete:
-        #    sleep(0.1)
-        sleep(0.5)
-
-        self.repacker.finish()
-
-
-    def _writeChunk(self, reader: pod5.Reader, chunkNumber: int, readIds: Collection[str]):
-
-        chunkName = f"{self.fileBase}_{chunkNumber:05d}.pod5"
-        chunkPath = self.outDir / chunkName
-
-        chunkPath.unlink(True)
-
-        with pod5.Writer(chunkPath) as writer:
-            repackerOut = self.repacker.add_output(writer)
-            self.repacker.add_selected_reads_to_output(repackerOut, reader, readIds)
-            self.repacker.set_output_finished(repackerOut)
-
 
 if __name__ == "__main__":
     splitter = Pod5Split()
