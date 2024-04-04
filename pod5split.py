@@ -90,7 +90,7 @@ class Pod5Split():
                     repacker.set_output_finished(repackerOut)
                     repacker.finish()
 
-            pbar.update(end)
+            pbar.update()
 
             chunkNumber += 1
 
