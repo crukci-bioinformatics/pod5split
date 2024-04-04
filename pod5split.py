@@ -26,13 +26,13 @@ class Pod5Split():
 
     def __init__(self):
         self.parser = ArgumentParser(
-                            prog='pod5split',
+                            prog='pod5split.py',
                             description='Split a Pod5 file into smaller files of a specified number of reads.',
-                            epilog='The default output directory is the current working directory.\nThe default name is the base name of the input file.')
-        self.parser.add_argument('-r', '--reads', metavar = 'int', default = 25000, dest = 'chunkSize', type = int)
-        self.parser.add_argument('-i', '--in', metavar = 'file', dest = 'inPod5', required = True, type = Path)
-        self.parser.add_argument('-o', '--out', metavar = 'dir', dest = 'outDir', type = Path)
-        self.parser.add_argument('-b', '--base', metavar = 'name', dest = 'fileBase')
+                            epilog='The default output directory is the current working directory. The default name is the base name of the input file.')
+        self.parser.add_argument('-b', '--base', metavar = '<name>', dest = 'fileBase', help = "The base name for the output files.")
+        self.parser.add_argument('-o', '--out', metavar = '<dir>', dest = 'outDir', type = Path, help = "The directory to write the file's chunks to.")
+        self.parser.add_argument('-r', '--reads', metavar = '<int>', default = 25000, dest = 'chunkSize', type = int, help = "The number of reads in each chunk. Default 25000.")
+        self.parser.add_argument('inPod5', metavar = '<pod5 file>', type = Path, help = "The Pod5 file to split.")
         # self.parser.add_argument('-t', '--threads', metavar = 'int', default = DEFAULT_THREADS, dest = 'threads', type = int)
 
     def parse(self, args = None):
