@@ -8,18 +8,28 @@ to split a large Pod5 file into chunks of a given number of reads.
 Assuming your environment is set up correctly (see below), the program is run on the command line thus:
 
 ```
-python3 pod5split.py [-h] [-b <name>] [-o <dir>] [-r <int>] <pod5 file>
+usage: pod5split.py [-h] [-b <name>] [-o <dir>] [-r <int>] [-t <int>]
+                    <pod5 file>
+
+Split a Pod5 file into smaller files of a specified number of reads.
+
+positional arguments:
+  <pod5 file>           The Pod5 file to split.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -b <name>, --base <name>
+                        The base name for the output files.
+  -o <dir>, --out <dir>
+                        The directory to write the file's chunks to.
+  -r <int>, --reads <int>
+                        The number of reads in each chunk. Default 25000.
+  -t <int>, --threads <int>
+                        The number of parallel threads to use. Default is 4.
+
+The default output directory is the current working directory. The default
+name is the base name of the input file.
 ```
-
-The required argument is the path to the Pod5 file you want to split. Other options are:
-
-`-b`/`--base`: The base name for the output file chunks. If this is not provided, the base
-name of the input pod5 file is used.
-
-`-o`/`--out`: The directory to write the chunk files to. Defaults to the current working
-directory if not given. The directory is created if it does not exist.
-
-`-r`/`--reads`: The number of reads to put in each chunk. The default is 25,000.
 
 
 ## Creating the Virtual Environment
