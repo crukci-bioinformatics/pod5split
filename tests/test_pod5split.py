@@ -45,10 +45,11 @@ def test_parse_defaults():
     assert splitter.fileBase == 'fourreads'
     assert splitter.chunkSize == 25000
     assert splitter.outDir == Path.cwd()
+    assert splitter.threads == _default_threads_calcuation()
     assert splitter.inPod5 == data_file
 
 def test_parse_full():
-    args = [ '-b', 'unittest', '-o', str(out_dir), '-r', '150', str(data_file) ]
+    args = [ '-b', 'unittest', '-o', str(out_dir), '-r', '150', '-t', '2', str(data_file) ]
 
     splitter = Pod5Split()
     splitter.parse(args)
@@ -56,10 +57,11 @@ def test_parse_full():
     assert splitter.fileBase == 'unittest'
     assert splitter.chunkSize == 150
     assert splitter.outDir == out_dir
+    assert splitter.threads == 2
     assert splitter.inPod5 == data_file
 
 def test_split_into_chunks_of_two(setup):
-    args = [ '-b', 'tworeads', '-o', str(out_dir), '-r', '2', str(data_file) ]
+    args = [ '-b', 'tworeads', '-o', str(out_dir), '-r', '2', '-t', '1', str(data_file) ]
 
     splitter = Pod5Split()
     splitter.parse(args)
@@ -67,6 +69,7 @@ def test_split_into_chunks_of_two(setup):
     assert splitter.fileBase == 'tworeads'
     assert splitter.chunkSize == 2
     assert splitter.outDir == out_dir
+    assert splitter.threads == 1
     assert splitter.inPod5 == data_file
 
     splitter.split()
@@ -82,7 +85,7 @@ def test_split_into_chunks_of_two(setup):
     _check_read_count(out_dir / 'tworeads.00001.pod5', 2)
 
 def test_split_into_chunks_of_three(setup):
-    args = [ '-b', 'threereads', '-o', str(out_dir), '-r', '3', str(data_file) ]
+    args = [ '-b', 'threereads', '-o', str(out_dir), '-r', '3', '-t', '1', str(data_file) ]
 
     splitter = Pod5Split()
     splitter.parse(args)
@@ -90,6 +93,7 @@ def test_split_into_chunks_of_three(setup):
     assert splitter.fileBase == 'threereads'
     assert splitter.chunkSize == 3
     assert splitter.outDir == out_dir
+    assert splitter.threads == 1
     assert splitter.inPod5 == data_file
 
     splitter.split()
@@ -104,6 +108,9 @@ def test_split_into_chunks_of_three(setup):
     assert 'threereads.00001.pod5' in names, "Missing threereads.00001.pod5"
     _check_read_count(out_dir / 'threereads.00001.pod5', 1)
 
+
+def _default_threads_calcuation():
+    return min(os.cpu_count() or 4, 4)
 
 def _check_read_count(pod5file, expectedReads):
     with pod5.Reader(pod5file) as reader:
