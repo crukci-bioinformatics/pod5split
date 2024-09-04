@@ -121,7 +121,10 @@ class Pod5Split:
 
             pbar.close()
 
-if __name__ == "__main__":
+def main():
     splitter = Pod5Split()
     splitter.parse()
     splitter.split()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,1 @@
+from .pod5split import main
