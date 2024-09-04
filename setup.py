@@ -5,6 +5,7 @@ setup(
     version="0.1.0",
     packages=find_packages(),
     install_requires=[
+        "argparse",
         "pod5>=0.3.0",
         "pytest"
     ],
@@ -22,6 +23,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',  
+    python_requires='>=3.6'
 )
 
